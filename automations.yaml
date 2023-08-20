@@ -1,0 +1,34 @@
+- id: '1690837324219'
+  alias: scraping electricity trigger
+  description: ''
+  trigger:
+  - platform: time
+    at: 04:00:00
+  condition: []
+  action:
+  - event: scrape_electricity
+    event_data: {}
+  mode: single
+- id: '1691765480795'
+  alias: scraping electricity prices trigger
+  description: ''
+  trigger:
+  - platform: time
+    at: '16:00:00'
+  condition: []
+  action:
+  - event: scrape_electricity_price
+    event_data: {}
+  mode: single
+- id: '1692028285873'
+  alias: adjust_electricity_export
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: '0'
+    seconds: '0'
+  condition: []
+  action:
+  - event: adjust_electricity_export
+    event_data: {}
+  mode: single
