@@ -4,22 +4,32 @@ from homeassistant.components.recorder import get_instance
 from homeassistant.components.recorder.models import StatisticMetaData, StatisticData
 from homeassistant.components.recorder.statistics import async_add_external_statistics, get_last_statistics, statistics_during_period
 from homeassistant.components.recorder.history import get_significant_states
-from homeassistant.util.dt import get_time_zone, now, as_utc, as_local, DEFAULT_TIME_ZONE
+from homeassistant.util.dt import now, as_utc, as_local, DEFAULT_TIME_ZONE
 from bisect import bisect_right
 from itertools import islice
 
-PRAGUE_TZ = get_time_zone('Europe/Prague')
+CNB_EUR_PRICE_URL_PATTERN = 'https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/vybrane.txt?od={}&do={}&mena=EUR&format=txt'
+OTE_SPOT_ELE_PRICE_URL_PATTERN = 'https://www.ote-cr.cz/cs/kratkodobe-trhy/elektrina/denni-trh/@@chart-data?report_date={}'
+EXPORT_ENTITY_ID = 'sensor.meter_total_energy_export'
+ELE_PRICE_STAT_ID = 'ote:electricity_price'
+ELE_PRICE_SOURCE = 'ote'
+PV_INCOME_STAT_ID = 'ote:pv_income'
+PV_INCOME_SOURCE = 'ote'
+EUR_RATE_STAT_ID = 'cnb:eur_rate'
+EUR_RATE_SOURCE = 'cnb'
+EXPORT_LIMIT_ENTITY_ID = 'number.grid_export_limit'
+EXPORT_LIMIT_MAX = '6000.0'
 
+DAY_DELTA = timedelta(days=1)
 
 def get_eur_rate(day: date):
     from_day_str = (day - timedelta(days=2)).strftime('%d.%m.%Y')
     day_str = day.strftime('%d.%m.%Y')
-    url = f'https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/vybrane.txt?od={from_day_str}&do={day_str}&mena=EUR&format=txt'
+    url = CNB_EUR_PRICE_URL_PATTERN.format(from_day_str, day_str)
     async with ClientSession() as session:
         async with session.get(url) as resp:
             if resp.status == 200:
                 line = resp.text().strip().split('\n')[-1].strip().split('|')
-                #assert line[0] == day_str, f'Returned EUR rate date {line[0]} is not {day_str}'
                 log.info(f'Read EUR rate from CNB of {line[1]} on {line[0]}')
                 return float(line[1].replace(',', '.'))
             else:
@@ -28,14 +38,13 @@ def get_eur_rate(day: date):
 
 
 def get_power(day: date):
-    entity_id = 'sensor.meter_total_energy_export'
-    dt = as_utc(datetime.combine(day, time.min, tzinfo=DEFAULT_TIME_ZONE))
+    dt = day_with_hour_utc(day, hour=0)
     states = await get_instance(hass).async_add_executor_job(
         get_significant_states,
         hass,
         dt - timedelta(hours=3),
         dt + timedelta(days=1, hours=3),
-        [entity_id],
+        [EXPORT_ENTITY_ID],
         None, #filters
         True, #include_start_time_state
         True, #significant_changes_only
@@ -43,17 +52,17 @@ def get_power(day: date):
         True, #no_attributes
         False #compressed_state_format
     )
-    points = {s.last_changed: float(s.state) for s in states[entity_id]}
+    points = {s.last_changed: float(s.state) for s in states[EXPORT_ENTITY_ID]}
     log.info(f'Read {len(points)} power points from sensor')
     return points
 
 
 def get_prices(day: date):
-    url = f'https://www.ote-cr.cz/cs/kratkodobe-trhy/elektrina/denni-trh/@@chart-data?report_date={day.isoformat()}'
+    url = OTE_SPOT_ELE_PRICE_URL_PATTERN.format(day.isoformat())
     async with ClientSession() as session:
         async with session.get(url) as resp:
             if resp.status != 200:
-                log.warning(f'Reading electricicty prices for {url} failed: {resp.status}')
+                log.warning(f'Reading electricity prices for {url} failed: {resp.status}')
                 return None
             else:
                 data = resp.json()
@@ -64,10 +73,10 @@ def get_prices(day: date):
 
 @event_trigger('scrape_electricity_price')
 def scrape_electricity_price():
-    tomorrow = now().date() + timedelta(days=1)
+    tomorrow = now().date() + DAY_DELTA
     prices = get_prices(tomorrow)
-    stats = [StatisticData(start=as_utc(datetime.combine(tomorrow, time(h, 0, 0), tzinfo=DEFAULT_TIME_ZONE)), mean=p, min=p, max=p) for h, p in prices.items()]
-    meta = StatisticMetaData(statistic_id='ote:electricity_price', source='ote', name='Electricity price', has_sum=False, has_mean=True, unit_of_measurement='€/MWh')
+    stats = [StatisticData(start=day_with_hour_utc(tomorrow, h), mean=p, min=p, max=p) for h, p in prices.items()]
+    meta = StatisticMetaData(statistic_id=ELE_PRICE_STAT_ID, source=ELE_PRICE_SOURCE, name='Electricity price', has_sum=False, has_mean=True, unit_of_measurement='€/MWh')
     async_add_external_statistics(hass, meta, stats)
     log.info(f'Added {len(stats)} electricity prices for {tomorrow}')
 
@@ -77,14 +86,14 @@ def get_last_income_sum(yesterday: date):
         get_last_statistics,
         hass,
         1,
-        'ote:pv_income',
+        PV_INCOME_STAT_ID,
         False,
         {"sum"},
     )
     if len(last_income_stats) == 0:
         log.error('Starting income from zero? Better not saving!!!')
         raise Exception("No last income!")
-    lis = last_income_stats['ote:pv_income'][0]
+    lis = last_income_stats[PV_INCOME_STAT_ID][0]
     last_income_date = datetime.fromtimestamp(lis['end'])
     assert last_income_date <= datetime.combine(yesterday, time.min), f"Last income sum is newer than what we are reading! last income date={last_income_date}, yesterday={yesterday}"
     income_sum = lis['sum']
@@ -98,26 +107,27 @@ def get_prices_stats(start: datetime, end: datetime):
         hass,
         start,
         end,
-        {'ote:electricity_price'},
+        {ELE_PRICE_STAT_ID},
         "hour",
         None,
         {"mean"},
     )
-    if 'ote:electricity_price' not in stats:
+    if ELE_PRICE_STAT_ID not in stats:
         raise Exception(f'No electricity price stat found from {start.isoformat()} - {end.isoformat()}')
-    prices = {i: s['mean'] for i, s in enumerate(stats['ote:electricity_price'])}
+    prices = {i: s['mean'] for i, s in enumerate(stats[ELE_PRICE_STAT_ID])}
     log.info(f'Read {len(prices)} prices stats from {start.isoformat()} - {end.isoformat()}')
     return prices
 
 
 @event_trigger('scrape_electricity')
 def scrape_electricity():
-    yesterday = now().date() - timedelta(days=1)
+    yesterday = now().date() - DAY_DELTA
+    day_bef_yesterday = yesterday - DAY_DELTA
 
-    yesterday_dt = as_utc(datetime.combine(yesterday, time.min, tzinfo=DEFAULT_TIME_ZONE))
-    prices = get_prices_stats(yesterday_dt, yesterday_dt + timedelta(days=1))
+    yesterday_dt = day_with_hour_utc(yesterday, hour=0)
+    prices = get_prices_stats(yesterday_dt, yesterday_dt + DAY_DELTA)
 
-    eur_rate = get_eur_rate(yesterday - timedelta(days=1))
+    eur_rate = get_eur_rate(day_bef_yesterday)
 
     power = get_power(yesterday)
     i = 0
@@ -125,7 +135,7 @@ def scrape_electricity():
     power_values = list(power.values())
     powers = {}
     for h in range(25):
-        i = bisect_right(power_dates, datetime.combine(yesterday, time.min, tzinfo=DEFAULT_TIME_ZONE) + timedelta(hours=h), lo=i)
+        i = bisect_right(power_dates, day_with_hour_utc(yesterday, hour=0) + timedelta(hours=h), lo=i)
         if i == 0:
             continue
         if i >= len(power_dates):
@@ -138,16 +148,15 @@ def scrape_electricity():
     income_stats = []
     income_sum = get_last_income_sum(yesterday)
     for h in range(24):
-        start = as_utc(datetime.combine(yesterday, time(h, 0, 0), tzinfo=DEFAULT_TIME_ZONE))
         if h in prices and h in power_diffs:
             income = prices[h] * power_diffs[h] * eur_rate / 1000
             income_sum += income
-            income_stats.append(StatisticData(start=start, state=income, sum=income_sum))
+            income_stats.append(StatisticData(start=day_with_hour_utc(yesterday, h), state=income, sum=income_sum))
 
-    income_meta = StatisticMetaData(statistic_id='ote:pv_income', source='ote', name='PV export income', has_sum=True, has_mean=False, unit_of_measurement='Kč')
-    eur_rate_meta = StatisticMetaData(statistic_id='cnb:eur_rate', source='cnb', name='EUR/CZK rate', has_sum=False, has_mean=True, unit_of_measurement='Kč/€')
+    income_meta = StatisticMetaData(statistic_id=PV_INCOME_STAT_ID, source=PV_INCOME_STAT_ID, name='PV export income', has_sum=True, has_mean=False, unit_of_measurement='Kč')
+    eur_rate_meta = StatisticMetaData(statistic_id=EUR_RATE_STAT_ID, source=EUR_RATE_SOURCE, name='EUR/CZK rate', has_sum=False, has_mean=True, unit_of_measurement='Kč/€')
     async_add_external_statistics(hass, income_meta, income_stats)
-    async_add_external_statistics(hass, eur_rate_meta, [StatisticData(start=as_utc(datetime.combine(yesterday - timedelta(days=1), time.min, tzinfo=DEFAULT_TIME_ZONE)), mean=eur_rate, min=eur_rate, max=eur_rate)])
+    async_add_external_statistics(hass, eur_rate_meta, [StatisticData(start=day_with_hour_utc(day_bef_yesterday, hour=0), mean=eur_rate, min=eur_rate, max=eur_rate)])
     log.info(f'Added {len(income_stats)} income, and 1 eur rate stats for {yesterday}')
 
 
@@ -155,9 +164,12 @@ def scrape_electricity():
 def adjust_electricity_export():
     start = now().replace(minute=0, second=0, microsecond=0)
     price = get_prices_stats(start, start + timedelta(hours=1))[0]
-    #log.info(hass.states.get('number.grid_export_limit'))
     if price < 0:
         log.info(f'Current electricity price is {price}, disabling export')
-        hass.states.async_set('number.grid_export_limit', '0.0')
+        hass.states.async_set(EXPORT_LIMIT_ENTITY_ID, '0.0')
     else:
-        hass.states.async_set('number.grid_export_limit', '6000.0')
+        hass.states.async_set(EXPORT_LIMIT_ENTITY_ID, EXPORT_LIMIT_MAX)
+
+
+def day_with_hour_utc(day: date, hour: int) -> datetime:
+    return as_utc(datetime.combine(day, time(hour, 0, 0), tzinfo=DEFAULT_TIME_ZONE))
