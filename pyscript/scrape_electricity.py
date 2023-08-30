@@ -23,7 +23,7 @@ EXPORT_LIMIT_MAX = '6000.0'
 DAY_DELTA = timedelta(days=1)
 
 
-def get_eur_rate(day: date):
+def get_eur_rate(day: date) -> float|None:
     from_day_str = (day - timedelta(days=2)).strftime('%d.%m.%Y')
     day_str = day.strftime('%d.%m.%Y')
     url = CNB_EUR_PRICE_URL_PATTERN.format(from_day_str, day_str)
@@ -37,13 +37,13 @@ def get_eur_rate(day: date):
         return None
 
 
-def get_power(day: date):
+def get_power(day: date, hours_overlap: int = 6):
     dt = day_with_hour_utc(day, hour=0)
     states = await get_instance(hass).async_add_executor_job(
         get_significant_states,
         hass,
-        dt - timedelta(hours=3),
-        dt + timedelta(days=1, hours=3),
+        dt - timedelta(hours=hours_overlap),
+        dt + timedelta(days=1, hours=hours_overlap),
         [EXPORT_ENTITY_ID],
         None,   # filters
         True,   # include_start_time_state
@@ -121,12 +121,13 @@ def get_prices_stats(start: datetime, end: datetime):
 @event_trigger('scrape_electricity')
 def scrape_electricity():
     yesterday = now().date() - DAY_DELTA
-    day_bef_yesterday = yesterday - DAY_DELTA
 
     yesterday_dt = day_with_hour_utc(yesterday, hour=0)
     prices = get_prices_stats(yesterday_dt, yesterday_dt + DAY_DELTA)
 
+    day_bef_yesterday = yesterday - DAY_DELTA
     eur_rate = get_eur_rate(day_bef_yesterday)
+    store_eur_rate(eur_rate, day_bef_yesterday)
 
     power = get_power(yesterday)
     i = 0
@@ -141,6 +142,9 @@ def scrape_electricity():
             break
         powers[h] = power_values[i-1]
         log.debug((h, i, power_dates[i-1], power_values[i-1]))
+    if len(powers) < 2:
+        log.warning(f'There is only {len(powers)} hourly powers, not enough to compute diffs!')
+        return
     power_diffs = {h: (p2 - p1) for (h, p1), p2 in zip(powers.items(), islice(powers.values(), 1, None))}
     log.info(f'Reduced power to {len(power_diffs)} hours')
 
@@ -153,10 +157,8 @@ def scrape_electricity():
             income_stats.append(StatisticData(start=day_with_hour_utc(yesterday, h), state=income, sum=income_sum))
 
     income_meta = StatisticMetaData(statistic_id=PV_INCOME_STAT_ID, source=PV_INCOME_SOURCE, name='PV export income', has_sum=True, has_mean=False, unit_of_measurement='Kč')
-    eur_rate_meta = StatisticMetaData(statistic_id=EUR_RATE_STAT_ID, source=EUR_RATE_SOURCE, name='EUR/CZK rate', has_sum=False, has_mean=True, unit_of_measurement='Kč/€')
     async_add_external_statistics(hass, income_meta, income_stats)
-    async_add_external_statistics(hass, eur_rate_meta, [StatisticData(start=day_with_hour_utc(day_bef_yesterday, hour=0), mean=eur_rate, min=eur_rate, max=eur_rate)])
-    log.info(f'Added {len(income_stats)} income, and 1 eur rate stats for {yesterday}')
+    log.info(f'Added {len(income_stats)} income stats for {yesterday}')
 
 
 @event_trigger('adjust_electricity_export')
@@ -168,6 +170,12 @@ def adjust_electricity_export():
         hass.states.async_set(EXPORT_LIMIT_ENTITY_ID, '0.0')
     else:
         hass.states.async_set(EXPORT_LIMIT_ENTITY_ID, EXPORT_LIMIT_MAX)
+
+
+def store_eur_rate(eur_rate: float, day: date):
+    eur_rate_meta = StatisticMetaData(statistic_id=EUR_RATE_STAT_ID, source=EUR_RATE_SOURCE, name='EUR/CZK rate', has_sum=False, has_mean=True, unit_of_measurement='Kč/€')
+    async_add_external_statistics(hass, eur_rate_meta, [StatisticData(start=day_with_hour_utc(day, hour=0), mean=eur_rate, min=eur_rate, max=eur_rate)])
+    log.info(f'Added eur rate {eur_rate} stat for {day}')
 
 
 def day_with_hour_utc(day: date, hour: int) -> datetime:
