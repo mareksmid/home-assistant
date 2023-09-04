@@ -1,4 +1,5 @@
-import requests
+from requests import Session, Response
+from requests.adapters import HTTPAdapter, Retry
 from datetime import date, datetime, time, timedelta
 from homeassistant.components.recorder import get_instance
 from homeassistant.components.recorder.models import StatisticMetaData, StatisticData
@@ -21,6 +22,7 @@ EXPORT_LIMIT_ENTITY_ID = 'number.grid_export_limit'
 EXPORT_LIMIT_MAX = '6000.0'
 
 DAY_DELTA = timedelta(days=1)
+HTTP_ADAPTER = HTTPAdapter(max_retries=Retry(total=5, backoff_factor=2.0))
 
 
 def get_eur_rate(day: date) -> float|None:
@@ -37,7 +39,7 @@ def get_eur_rate(day: date) -> float|None:
         return None
 
 
-def get_power(day: date, hours_overlap: int = 6):
+def get_power(day: date, hours_overlap: int = 6) -> dict[datetime, float]:
     dt = day_with_hour_utc(day, hour=0)
     states = await get_instance(hass).async_add_executor_job(
         get_significant_states,
@@ -57,7 +59,7 @@ def get_power(day: date, hours_overlap: int = 6):
     return points
 
 
-def get_prices(day: date):
+def get_prices(day: date) -> dict[int, float] | None:
     url = OTE_SPOT_ELE_PRICE_URL_PATTERN.format(day.isoformat())
     resp = http_get(url)
     if resp.status_code != 200:
@@ -71,7 +73,7 @@ def get_prices(day: date):
 
 
 @event_trigger('scrape_electricity_price')
-def scrape_electricity_price():
+def scrape_electricity_price() -> None:
     tomorrow = now().date() + DAY_DELTA
     prices = get_prices(tomorrow)
     stats = [StatisticData(start=day_with_hour_utc(tomorrow, h), mean=p, min=p, max=p) for h, p in prices.items()]
@@ -80,7 +82,7 @@ def scrape_electricity_price():
     log.info(f'Added {len(stats)} electricity prices for {tomorrow}')
 
 
-def get_last_income_sum(yesterday: date):
+def get_last_income_sum(yesterday: date) -> float:
     last_income_stats = await get_instance(hass).async_add_executor_job(
         get_last_statistics,
         hass,
@@ -100,7 +102,7 @@ def get_last_income_sum(yesterday: date):
     return income_sum
 
 
-def get_prices_stats(start: datetime, end: datetime):
+def get_prices_stats(start: datetime, end: datetime) -> dict[int, float] | None:
     stats = await get_instance(hass).async_add_executor_job(
         statistics_during_period,
         hass,
@@ -112,18 +114,22 @@ def get_prices_stats(start: datetime, end: datetime):
         {"mean"},
     )
     if ELE_PRICE_STAT_ID not in stats:
-        raise Exception(f'No electricity price stat found from {start.isoformat()} - {end.isoformat()}')
+        log.warning(f'No electricity price stat found from {start.isoformat()} - {end.isoformat()}')
+        return None
     prices = {i: s['mean'] for i, s in enumerate(stats[ELE_PRICE_STAT_ID])}
-    log.info(f'Read {len(prices)} prices stats from {start.isoformat()} - {end.isoformat()}')
+    log.debug(f'Read {len(prices)} prices stats from {start.isoformat()} - {end.isoformat()}')
     return prices
 
 
 @event_trigger('scrape_electricity')
-def scrape_electricity():
+def scrape_electricity() -> None:
     yesterday = now().date() - DAY_DELTA
 
     yesterday_dt = day_with_hour_utc(yesterday, hour=0)
     prices = get_prices_stats(yesterday_dt, yesterday_dt + DAY_DELTA)
+    if prices is None:
+        log.warning(f'No electricity price stat found for computing export income at {yesterday.isoformat()}')
+        return
 
     day_bef_yesterday = yesterday - DAY_DELTA
     eur_rate = get_eur_rate(day_bef_yesterday)
@@ -141,7 +147,6 @@ def scrape_electricity():
         if i >= len(power_dates):
             break
         powers[h] = power_values[i-1]
-        log.debug((h, i, power_dates[i-1], power_values[i-1]))
     if len(powers) < 2:
         log.warning(f'There is only {len(powers)} hourly powers, not enough to compute diffs!')
         return
@@ -162,9 +167,12 @@ def scrape_electricity():
 
 
 @event_trigger('adjust_electricity_export')
-def adjust_electricity_export():
+def adjust_electricity_export() -> None:
     start = now().replace(minute=0, second=0, microsecond=0)
     price = get_prices_stats(start, start + timedelta(hours=1))
+    if price is None:
+        log.warning(f'Cannot read current electricity price, not adjusting export at {start.isoformat()}')
+        return
     if price[0] < 0:
         log.info(f'Current electricity price is {price[0]}, disabling export')
         hass.states.async_set(EXPORT_LIMIT_ENTITY_ID, '0.0')
@@ -172,7 +180,7 @@ def adjust_electricity_export():
         hass.states.async_set(EXPORT_LIMIT_ENTITY_ID, EXPORT_LIMIT_MAX)
 
 
-def store_eur_rate(eur_rate: float, day: date):
+def store_eur_rate(eur_rate: float, day: date) -> None:
     eur_rate_meta = StatisticMetaData(statistic_id=EUR_RATE_STAT_ID, source=EUR_RATE_SOURCE, name='EUR/CZK rate', has_sum=False, has_mean=True, unit_of_measurement='Kč/€')
     async_add_external_statistics(hass, eur_rate_meta, [StatisticData(start=day_with_hour_utc(day, hour=0), mean=eur_rate, min=eur_rate, max=eur_rate)])
     log.info(f'Added eur rate {eur_rate} stat for {day}')
@@ -182,6 +190,8 @@ def day_with_hour_utc(day: date, hour: int) -> datetime:
     return as_utc(datetime.combine(day, time(hour, 0, 0), tzinfo=DEFAULT_TIME_ZONE))
 
 
-def http_get(url: str) -> requests.Response:
-    resp = await hass.async_add_executor_job(requests.get, url)
+def http_get(url: str) -> Response:
+    s = Session()
+    s.mount('https://', HTTP_ADAPTER)
+    resp = await hass.async_add_executor_job(s.get, url)
     return resp
