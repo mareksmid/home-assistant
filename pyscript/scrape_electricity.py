@@ -54,7 +54,7 @@ def get_power(day: date, hours_overlap: int = 6) -> dict[datetime, float]:
         True,   # no_attributes
         False,  # compressed_state_format
     )
-    points = {s.last_changed: float(s.state) for s in states[EXPORT_ENTITY_ID]}
+    points = {s.last_changed: float(s.state) for s in states[EXPORT_ENTITY_ID] if s.state != 'unavailable'}
     log.info(f'Read {len(points)} power points from sensor')
     return points
 
