@@ -76,7 +76,7 @@ def get_prices(day: date) -> dict[int, float] | None:
 def scrape_electricity_price() -> None:
     tomorrow = now().date() + DAY_DELTA
     prices = get_prices(tomorrow)
-    stats = [StatisticData(start=day_with_hour_utc(tomorrow, h), mean=p, min=p, max=p) for h, p in prices.items()]
+    stats = [StatisticData(start=day_with_hour_utc(tomorrow, h), mean=p, min=p, max=p) for h, p in prices.items() if h < 24]
     meta = StatisticMetaData(statistic_id=ELE_PRICE_STAT_ID, source=ELE_PRICE_SOURCE, name='Electricity price', has_sum=False, has_mean=True, unit_of_measurement='€/MWh')
     async_add_external_statistics(hass, meta, stats)
     log.info(f'Added {len(stats)} electricity prices for {tomorrow}')
