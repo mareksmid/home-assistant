@@ -9,6 +9,10 @@ from homeassistant.util.dt import now, as_utc, as_local, DEFAULT_TIME_ZONE
 from bisect import bisect_right
 from itertools import islice
 
+# 'select.inverter_operation_mode'
+# 'number.goodwe_eco_mode_soc'
+# 'number.goodwe_eco_mode_power'
+
 CNB_EUR_PRICE_URL_PATTERN = 'https://www.cnb.cz/cs/financni-trhy/devizovy-trh/kurzy-devizoveho-trhu/kurzy-devizoveho-trhu/vybrane.txt?od={}&do={}&mena=EUR&format=txt'
 OTE_SPOT_ELE_PRICE_URL_PATTERN = 'https://www.ote-cr.cz/cs/kratkodobe-trhy/elektrina/denni-trh/@@chart-data?report_date={}'
 EXPORT_ENTITY_ID = 'sensor.meter_total_energy_export'
