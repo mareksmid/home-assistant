@@ -1,0 +1,47 @@
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, Platform
+from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed
+
+from homeassistant.components.wallbox.const import CONF_STATION
+from homeassistant.components.wallbox.coordinator import InvalidAuth, async_validate_input
+from .coordinator import Wallbox2Coordinator
+
+from wallbox import Wallbox
+from .const import DOMAIN, UPDATE_INTERVAL
+
+PLATFORMS = [Platform.LOCK, Platform.NUMBER, Platform.SENSOR, Platform.SWITCH]
+
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    wallbox = Wallbox(
+        entry.data[CONF_USERNAME],
+        entry.data[CONF_PASSWORD],
+        jwtTokenDrift=UPDATE_INTERVAL,
+    )
+    try:
+        await async_validate_input(hass, wallbox)
+    except InvalidAuth as ex:
+        raise ConfigEntryAuthFailed from ex
+
+    wallbox_coordinator = Wallbox2Coordinator(
+        entry.data[CONF_STATION],
+        wallbox,
+        hass,
+    )
+    await wallbox_coordinator.async_config_entry_first_refresh()
+
+    hass.data.setdefault(DOMAIN, {})[entry.entry_id] = wallbox_coordinator
+
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
+    return True
+
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+    if unload_ok:
+        hass.data[DOMAIN].pop(entry.entry_id)
+
+    return unload_ok

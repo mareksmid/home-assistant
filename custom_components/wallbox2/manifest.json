@@ -1,0 +1,11 @@
+{
+  "codeowners": ["@mareksmid"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/mareksmid/home-assistant/",
+  "domain": "wallbox2",
+  "iot_class": "cloud_polling",
+  "name": "Wallbox2",
+  "requirements": ["wallbox==0.7.0"],
+  "version": "1.0.0"
+}
