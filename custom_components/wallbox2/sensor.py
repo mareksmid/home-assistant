@@ -1,6 +1,6 @@
 import logging
 from itertools import groupby
-from datetime import datetime, time, timedelta
+from datetime import datetime, time
 
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
@@ -10,7 +10,7 @@ from homeassistant.components.sensor import SensorEntity, SensorEntityDescriptio
 from homeassistant.components.recorder.statistics import async_import_statistics, DOMAIN as RECORDER_DOMAIN
 from homeassistant.components.recorder.models import StatisticMetaData, StatisticData
 from homeassistant.const import UnitOfEnergy
-from homeassistant.util.dt import as_utc, DEFAULT_TIME_ZONE
+from homeassistant.util.dt import utc_from_timestamp, UTC
 
 from homeassistant.components.wallbox.const import CHARGER_DATA_KEY, CHARGER_SERIAL_NUMBER_KEY
 from .coordinator import Wallbox2Coordinator
@@ -18,7 +18,6 @@ from .entity import Wallbox2Entity
 from .const import DOMAIN, SESSION_ENERGY, SESSION_ATTRIBUTES, SESSION_TIME
 
 _LOGGER = logging.getLogger(__name__)
-HOUR_DELTA = timedelta(hours=1)
 
 
 async def async_setup_entry(
@@ -62,7 +61,7 @@ class WallboxEnergySensor(Wallbox2Entity, SensorEntity):
 
     @staticmethod
     def _date_and_hour(timestamp: int):
-        dt = datetime.fromtimestamp(timestamp)
+        dt = utc_from_timestamp(timestamp)
         return dt.date(), dt.hour
 
     def _handle_coordinator_update(self) -> None:
@@ -79,7 +78,7 @@ class WallboxEnergySensor(Wallbox2Entity, SensorEntity):
             ):
                 energy = sum(s[SESSION_ATTRIBUTES][SESSION_ENERGY] for s in sessions)
                 total_energy += energy
-                stats.append(StatisticData(start=as_utc(datetime.combine(day, time(hour, 0, 0), tzinfo=DEFAULT_TIME_ZONE) - HOUR_DELTA), state=energy, sum=total_energy))
+                stats.append(StatisticData(start=datetime.combine(day, time(hour, 0, 0), tzinfo=UTC), state=energy, sum=total_energy))
                 _LOGGER.info(f"Stats @ {day}/{hour} = +{energy} -> {total_energy}")
 
             meta = StatisticMetaData(statistic_id=entity_id, source=RECORDER_DOMAIN, name='Total energy', has_sum=True, has_mean=False, unit_of_measurement=UnitOfEnergy.WATT_HOUR)

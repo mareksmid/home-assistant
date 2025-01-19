@@ -8,6 +8,7 @@ from homeassistant.components.wallbox.coordinator import WallboxCoordinator, _re
 from homeassistant.core import HomeAssistant
 from homeassistant.components.wallbox.const import CHARGER_DATA_KEY, CHARGER_NAME_KEY
 from homeassistant.helpers.translation import async_get_cached_translations
+from homeassistant.util.dt import utcnow, utc_from_timestamp
 from homeassistant.components.recorder import get_instance
 from homeassistant.components.recorder.statistics import get_last_statistics
 
@@ -52,7 +53,7 @@ class Wallbox2Coordinator(WallboxCoordinator):
                 _LOGGER.warning(f"Energy stats not available, starting from zero")
             else:
                 les = last_energy_stats[energy_entity_id][0]
-                last_energy_stats_date = datetime.fromtimestamp(les['end'])
+                last_energy_stats_date = utc_from_timestamp(les['end'])
                 last_energy_stats_sum = les['sum']
                 _LOGGER.info(f'Last energy stats: {les}')
         else:
@@ -63,7 +64,7 @@ class Wallbox2Coordinator(WallboxCoordinator):
         return await self.hass.async_add_executor_job(self._get_data, energy_entity_id, last_energy_stats_date, last_energy_stats_sum)
 
     def _get_energy_sessions(self, group_id: str, start_time: int) -> list[dict[str, Any]]:
-        last_hour_end = datetime.now().replace(minute=0, second=0, microsecond=0)
+        last_hour_end = utcnow().replace(minute=0, second=0, microsecond=0)
         end_time = int(last_hour_end.timestamp())
         try:
             response = requests.get(
