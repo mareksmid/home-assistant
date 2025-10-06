@@ -12,11 +12,13 @@ import time
 from PIL import Image
 import asyncio
 from pyppeteer import launch
+import logging
 
 url = 'https://hass.mareksmid.cz/dash-dash/0'
 image_path = '/dev/shm/hass.png'
 zoom = 1
 interval = 120
+logger = logging.getLogger('homepaper')
 
 
 async def start():
@@ -39,10 +41,14 @@ async def disp(epd, page):
 
 
 async def work(epd):
-    browser, page = await start()
-    while True:
-        await disp(epd, page)
-    await browser.close()
+    try:
+        browser, page = await start()
+        while True:
+            await disp(epd, page)
+        await browser.close()
+    except Exception as ex:
+        logger.warning(f"Failed: {ex}")
+        exit(1)
 
 
 if __name__ == '__main__':

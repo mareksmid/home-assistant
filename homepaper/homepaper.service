@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 TimeoutStartSec=0
-ExecStart=/usr/bin/python3 /home/marek/homepaper.py
+ExecStart=/home/marek/venv/bin/python3 /home/marek/homepaper.py
 Restart=always
 WorkingDirectory=/home/marek/
 StandardOutput=append:/home/marek/homepaper.log
