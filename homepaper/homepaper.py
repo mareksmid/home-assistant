@@ -1,54 +1,69 @@
 #!/usr/bin/python3
 
-#waveshare_epd/epdconfig.py 
-#waveshare_epd/epd3in52.py 
+#waveshare_epd/epdconfig.py
+#waveshare_epd/epd3in52.py
 #cp e-Paper/RaspberryPi_JetsonNano/python/pic/100x100.bmp .
-#waveshare_epd/epd3in52.py 
-#sudo pip3 install pyppeteer
+#waveshare_epd/epd3in52.py
 
-
+import os
 from waveshare_epd import epd3in52
 import time
-from PIL import Image
+from PIL import Image, ImageFont, ImageDraw
+import requests
 import asyncio
-from pyppeteer import launch
-import logging
 
-url = 'https://hass.mareksmid.cz/dash-dash/0'
-image_path = '/dev/shm/hass.png'
-zoom = 1
-interval = 120
-logger = logging.getLogger('homepaper')
+STATES_URL = 'https://hass.mareksmid.cz/api/states/'
+INTERVAL_SECS = 30
+TOKEN = os.environ['HASS_TOKEN']
 
 
-async def start():
-    browser = await launch(headless=True, executablePath='/usr/bin/chromium-browser', args=['--no-sandbox', '--disable-gpu', '--hide-scrollbars'])
-    page = await browser.newPage()
-    await page.setViewport({'width': 360*zoom, 'height': 240*zoom, 'deviceScaleFactor': 1/zoom})
-    page.setDefaultNavigationTimeout(30000)
-    return browser, page
+def get_state(entity_id: str, attribute: str = None, unit: str = None):
+    resp = requests.get(STATES_URL + entity_id, headers={"Authorization": f"Bearer {TOKEN}"})
+    if resp.status_code == 200:
+        data = resp.json()
+        if unit is None:
+            unit = data['attributes']['unit_of_measurement']
+        if attribute is None:
+            value = data['state']
+        else:
+            value = data['attributes'][attribute]
+        return f"{value} {unit}"
+    else:
+        return '---'
 
 
-async def disp(epd, page):
-    await page.goto(url, {'waitUntil': 'networkidle2'})
-    time.sleep(30)
-    await page.screenshot({'path': image_path})
-    image = Image.open(image_path)
+def fetch():
+    return {
+        'Venkovni teplota': get_state('sensor.temperature_out_temperature'),
+        'Vnitrni teplota': get_state('sensor.temperature_in_temperature'),
+        'Termostat pro kotel':  get_state("climate.dum", "current_temperature", "°C"),  # icon: mdi:thermometer
+        'Hladina': get_state('sensor.hladina'), # icon: mdi:water
+        'Ele. vyroba': get_state('sensor.pv_power'),
+        'Ele. spotreba': get_state('sensor.house_consumption'),
+        'Ele. dnes vyrobeno': get_state('sensor.today_s_pv_generation'),
+        'Baterie': get_state('sensor.battery_state_of_charge'),
+        'Wallbox vykon': get_state('sensor.wallbox2_copper_business_sn_443968_nabijeci_vykon'),
+    }
+
+async def disp(epd, data: dict[str, str]) -> None:
+    image = Image.new('1', (360, 240), 1) # 'RGB', (360, 240), (255, 255, 255)
+    fnt = ImageFont.truetype("/usr/local/share/fonts/v/VCR_OSD_MONO_1.001.ttf", 21)
+    d = ImageDraw.Draw(image)
+    for i, (label, value) in enumerate(data.items()):
+        y = 2 + i * 24
+        d.text((2, y), label, font=fnt, fill=0)
+        d.text((250, y), value, font=fnt, fill=0)
+    # image.save('x.png')
     epd.display(epd.getbuffer(image))
     epd.lut_GC()
     epd.refresh()
-    time.sleep(interval)
+    time.sleep(INTERVAL_SECS)
 
 
 async def work(epd):
-    try:
-        browser, page = await start()
-        while True:
-            await disp(epd, page)
-        await browser.close()
-    except Exception as ex:
-        logger.warning(f"Failed: {ex}")
-        exit(1)
+    while True:
+        data = fetch()
+        await disp(epd, data)
 
 
 if __name__ == '__main__':
@@ -60,8 +75,7 @@ if __name__ == '__main__':
 
     epd.send_command(0x50)
     epd.send_data(0x17)
-    
-    asyncio.get_event_loop().run_until_complete(work(epd))
+    asyncio.run(work(epd))
     
     epd.Clear()
     epd.sleep()
