@@ -1,3 +1,4 @@
+from homeassistant.helpers import issue_registry as ir
 from typing import Any
 import requests
 import json
@@ -5,8 +6,10 @@ import logging
 from datetime import timedelta, datetime
 
 from homeassistant.components.wallbox.coordinator import WallboxCoordinator, _require_authentication
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.components.wallbox.const import CHARGER_DATA_KEY, CHARGER_NAME_KEY
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.translation import async_get_cached_translations
 from homeassistant.util.dt import utcnow, utc_from_timestamp
 from homeassistant.components.recorder import get_instance
@@ -14,26 +17,35 @@ from homeassistant.components.recorder.statistics import get_last_statistics
 
 from wallbox import Wallbox
 
-from .const import SESSIONS_DATA, SESSION_ENERGY, CHARGER_GROUP_ID, DOMAIN, UPDATE_INTERVAL
+from .const import SESSIONS_DATA, SESSION_ENERGY, CHARGER_GROUP_ID, DOMAIN, UPDATE_INTERVAL, CONF_STATION
 
 _LOGGER = logging.getLogger(__name__)
 
+type Wallbox2ConfigEntry = ConfigEntry[Wallbox2Coordinator]
 
 class Wallbox2Coordinator(WallboxCoordinator):
 
-    def __init__(self, station: str, wallbox: Wallbox, hass: HomeAssistant) -> None:
+    def __init__(self, hass: HomeAssistant, config_entry: ConfigEntry, wallbox: Wallbox) -> None:
         self._hass = hass
-        self._station = station
+        # self._station = station
+        self._station = config_entry.data[CONF_STATION]
         self._wallbox = wallbox
 
         super(WallboxCoordinator, self).__init__(
             hass,
             _LOGGER,
+            config_entry=config_entry,
             name=DOMAIN,
             update_interval=timedelta(seconds=UPDATE_INTERVAL),
         )
 
+    @_require_authentication
     async def _async_update_data(self) -> dict[str, Any]:
+        self.update_interval = timedelta(
+            seconds=UPDATE_INTERVAL
+                    * max(len(self.hass.config_entries.async_loaded_entries(DOMAIN)), 1)
+        )
+
         if self.data is not None and CHARGER_NAME_KEY in self.data:
             translations = async_get_cached_translations(self._hass, self._hass.config.language, "entity_component")
             energy_name = translations[f"component.sensor.entity_component.{SESSION_ENERGY}.name"]
@@ -92,7 +104,6 @@ class Wallbox2Coordinator(WallboxCoordinator):
         return r[SESSIONS_DATA]
 
 
-    @_require_authentication
     def _get_data(self, energy_entity_id: str|None, last_energy_stats_date: datetime|None, last_energy_stats_sum: int|None) -> dict[str, Any]:
         data = super()._get_data()
         group_id = data[CHARGER_DATA_KEY][CHARGER_GROUP_ID]
@@ -114,6 +125,38 @@ class Wallbox2Coordinator(WallboxCoordinator):
             _LOGGER.info(f"Received {len(energy_sessions)} sessions")
         data[SESSION_ENERGY] = energy_sessions
         return data
+
+
+class InsufficientRights(HomeAssistantError):
+    """Error to indicate there are insufficient right for the user."""
+
+    def __init__(
+            self,
+            *args: object,
+            translation_domain: str | None = None,
+            translation_key: str | None = None,
+            translation_placeholders: dict[str, str] | None = None,
+            hass: HomeAssistant,
+    ) -> None:
+        """Initialize exception."""
+        super().__init__(
+            self, *args, translation_domain, translation_key, translation_placeholders
+        )
+        self.hass = hass
+        self._create_insufficient_rights_issue()
+
+    def _create_insufficient_rights_issue(self) -> None:
+        """Creates an issue for insufficient rights."""
+        ir.create_issue(
+            self.hass,
+            DOMAIN,
+            "insufficient_rights",
+            is_fixable=False,
+            severity=ir.IssueSeverity.ERROR,
+            learn_more_url="https://www.home-assistant.io/integrations/wallbox/#troubleshooting",
+            translation_key="insufficient_rights",
+        )
+
 
 # https://api.wall-box.com/v4/groups/428601/charger-charging-sessions
 # group_id: 428601

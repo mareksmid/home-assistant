@@ -3,8 +3,7 @@ from itertools import groupby
 from datetime import datetime, time
 
 from homeassistant.core import HomeAssistant
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.components.wallbox.sensor import WallboxSensor, SENSOR_TYPES
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription, SensorStateClass, SensorDeviceClass
 from homeassistant.components.recorder.statistics import async_import_statistics, DOMAIN as RECORDER_DOMAIN
@@ -13,17 +12,17 @@ from homeassistant.const import UnitOfEnergy
 from homeassistant.util.dt import utc_from_timestamp, UTC
 
 from homeassistant.components.wallbox.const import CHARGER_DATA_KEY, CHARGER_SERIAL_NUMBER_KEY
-from .coordinator import Wallbox2Coordinator
+from .coordinator import Wallbox2Coordinator, Wallbox2ConfigEntry
 from .entity import Wallbox2Entity
-from .const import DOMAIN, SESSION_ENERGY, SESSION_ATTRIBUTES, SESSION_TIME
+from .const import SESSION_ENERGY, SESSION_ATTRIBUTES, SESSION_TIME
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-        hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
+        hass: HomeAssistant, entry: Wallbox2ConfigEntry, async_add_entities: AddConfigEntryEntitiesCallback
 ) -> None:
-    coordinator: Wallbox2Coordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator: Wallbox2Coordinator = entry.runtime_data
 
     sensors: list[SensorEntity] = [
         Wallbox2Sensor(coordinator, description)
