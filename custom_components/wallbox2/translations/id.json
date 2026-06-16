@@ -7,7 +7,6 @@
         "error": {
             "cannot_connect": "Gagal terhubung",
             "invalid_auth": "Autentikasi tidak valid",
-            "reauth_invalid": "Autentikasi ulang gagal; Nomor seri tidak cocok dengan aslinya",
             "unknown": "Kesalahan tak terduga"
         },
         "step": {
@@ -20,7 +19,6 @@
             "user": {
                 "data": {
                     "password": "Kata Sandi",
-                    "station": "Nomor Seri Stasiun",
                     "username": "Nama Pengguna"
                 }
             }
@@ -35,6 +33,13 @@
         "number": {
             "energy_price": {
                 "name": "Harga energi"
+            }
+        },
+        "select": {
+            "ecosmart": {
+                "state": {
+                    "off": "Mati"
+                }
             }
         }
     }

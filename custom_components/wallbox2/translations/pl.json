@@ -7,7 +7,7 @@
         "error": {
             "cannot_connect": "Nie mo\u017cna nawi\u0105za\u0107 po\u0142\u0105czenia",
             "invalid_auth": "Niepoprawne uwierzytelnienie",
-            "reauth_invalid": "Ponowne uwierzytelnienie nie powiod\u0142o si\u0119. Numer seryjny nie pasuje do orygina\u0142u.",
+            "reauth_invalid": "Ponowne uwierzytelnienie si\u0119 nie powiod\u0142o. Numer seryjny nie pasuje do orygina\u0142u.",
             "unknown": "Nieoczekiwany b\u0142\u0105d"
         },
         "step": {
@@ -20,8 +20,12 @@
             "user": {
                 "data": {
                     "password": "Has\u0142o",
-                    "station": "Numer seryjny stacji",
                     "username": "Nazwa u\u017cytkownika"
+                },
+                "data_description": {
+                    "password": "Has\u0142o do Twojego konta Wallbox.",
+                    "station": "Numer seryjny \u0142adowarki. Mo\u017cna go znale\u017a\u0107 w aplikacji Wallbox lub w portalu Wallbox.",
+                    "username": "Nazwa u\u017cytkownika dla Twojego konta Wallbox."
                 }
             }
         }
@@ -29,8 +33,104 @@
     "entity": {
         "lock": {
             "lock": {
-                "name": "Zamek"
+                "name": "Blokada"
             }
+        },
+        "number": {
+            "energy_price": {
+                "name": "Cena energii"
+            },
+            "maximum_charging_current": {
+                "name": "Maksymalny pr\u0105d \u0142adowania"
+            },
+            "maximum_icp_current": {
+                "name": "Maksymalny pr\u0105d instalacji"
+            }
+        },
+        "select": {
+            "ecosmart": {
+                "name": "\u0141adowanie z fotowoltaiki",
+                "state": {
+                    "eco_mode": "Tryb Eco",
+                    "full_solar": "\u0141adowanie wy\u0142\u0105cznie z fotowoltaiki",
+                    "off": "wy\u0142\u0105czono"
+                }
+            }
+        },
+        "sensor": {
+            "added_discharged_energy": {
+                "name": "Energia oddana"
+            },
+            "added_energy": {
+                "name": "Energia dodana"
+            },
+            "added_green_energy": {
+                "name": "Dodana zielona energia"
+            },
+            "added_grid_energy": {
+                "name": "Dodana energia z sieci"
+            },
+            "added_range": {
+                "name": "Dodany zasi\u0119g"
+            },
+            "charging_power": {
+                "name": "Moc \u0142adowania"
+            },
+            "charging_speed": {
+                "name": "Szybko\u015b\u0107 \u0142adowania"
+            },
+            "cost": {
+                "name": "Koszt"
+            },
+            "current_mode": {
+                "name": "Aktualny tryb"
+            },
+            "depot_price": {
+                "name": "Cena energii w tej lokalizacji"
+            },
+            "energy_price": {
+                "name": "Cena energii"
+            },
+            "icp_max_current": {
+                "name": "Maksymalny pr\u0105d instalacji"
+            },
+            "max_available_power": {
+                "name": "Maksymalne dost\u0119pne nat\u0119\u017cenie"
+            },
+            "max_charging_current": {
+                "name": "Maksymalny nat\u0119\u017cenie \u0142adowania"
+            },
+            "state_of_charge": {
+                "name": "Poziom na\u0142adowania baterii"
+            },
+            "status_description": {
+                "name": "Stan"
+            }
+        },
+        "switch": {
+            "pause_resume": {
+                "name": "Wstrzymaj/wzn\u00f3w"
+            }
+        }
+    },
+    "exceptions": {
+        "api_failed": {
+            "message": "B\u0142\u0105d komunikacji z API Wallbox."
+        },
+        "insufficient_rights": {
+            "message": "Niewystarczaj\u0105ce uprawnienia u\u017cytkownika Wallbox."
+        },
+        "invalid_auth": {
+            "message": "B\u0142\u0105d uwierzytelnienia."
+        },
+        "too_many_requests": {
+            "message": "B\u0142\u0105d komunikacji z API Wallbox \u2013 wys\u0142ano zbyt wiele zapyta\u0144."
+        }
+    },
+    "issues": {
+        "insufficient_rights": {
+            "description": "Konto Wallbox ma niewystarczaj\u0105ce uprawnienia do blokowania/odblokowywania oraz zmiany mocy \u0142adowania. Prosz\u0119 nada\u0107 temu u\u017cytkownikowi uprawnienia administratora w portalu Wallbox.",
+            "title": "Konto Wallbox ma niewystarczaj\u0105ce uprawnienia."
         }
     }
 }

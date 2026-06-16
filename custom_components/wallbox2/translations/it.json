@@ -2,12 +2,11 @@
     "config": {
         "abort": {
             "already_configured": "Il dispositivo \u00e8 gi\u00e0 configurato",
-            "reauth_successful": "La riautenticazione ha avuto successo"
+            "reauth_successful": "La riautenticazione \u00e8 avvenuta con successo"
         },
         "error": {
             "cannot_connect": "Impossibile connettersi",
             "invalid_auth": "Autenticazione non valida",
-            "reauth_invalid": "Nuova autenticazione non riuscita; Il numero di serie non corrisponde all'originale",
             "unknown": "Errore imprevisto"
         },
         "step": {
@@ -20,7 +19,6 @@
             "user": {
                 "data": {
                     "password": "Password",
-                    "station": "Numero di serie della stazione",
                     "username": "Nome utente"
                 }
             }
@@ -38,6 +36,13 @@
             },
             "maximum_charging_current": {
                 "name": "Corrente di carica massima"
+            }
+        },
+        "select": {
+            "ecosmart": {
+                "state": {
+                    "off": "Spento"
+                }
             }
         },
         "sensor": {
@@ -85,6 +90,11 @@
             "pause_resume": {
                 "name": "Pausa/riprendi"
             }
+        }
+    },
+    "exceptions": {
+        "too_many_requests": {
+            "message": "Errore di comunicazione con l'API Wallbox, troppe richieste"
         }
     }
 }

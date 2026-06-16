@@ -7,7 +7,6 @@
         "error": {
             "cannot_connect": "Kan geen verbinding maken",
             "invalid_auth": "Ongeldige authenticatie",
-            "reauth_invalid": "Herauthenticatie mislukt; serial-nummer komt niet overeen met het origineel",
             "unknown": "Onverwachte fout"
         },
         "step": {
@@ -20,7 +19,6 @@
             "user": {
                 "data": {
                     "password": "Wachtwoord",
-                    "station": "Station Serienummer",
                     "username": "Gebruikersnaam"
                 }
             }
@@ -38,6 +36,13 @@
             },
             "maximum_charging_current": {
                 "name": "Maximale laadstroom"
+            }
+        },
+        "select": {
+            "ecosmart": {
+                "state": {
+                    "off": "Uit"
+                }
             }
         },
         "sensor": {
@@ -85,6 +90,11 @@
             "pause_resume": {
                 "name": "Pauzeren/hervatten"
             }
+        }
+    },
+    "exceptions": {
+        "invalid_auth": {
+            "message": "Ongeldige authenticatie"
         }
     }
 }

@@ -7,7 +7,6 @@
         "error": {
             "cannot_connect": "A e\u0219uat conectarea",
             "invalid_auth": "Autentificare nevalid\u0103",
-            "reauth_invalid": "Re-autentificarea nu a reu\u0219it; Num\u0103rul de serie nu se potrive\u0219te cu originalul",
             "unknown": "Eroare nea\u0219teptat\u0103"
         },
         "step": {
@@ -20,7 +19,6 @@
             "user": {
                 "data": {
                     "password": "Parola",
-                    "station": "Num\u0103rul de serie al sta\u021biei",
                     "username": "Utilizator"
                 }
             }

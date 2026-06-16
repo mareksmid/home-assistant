@@ -20,8 +20,13 @@
             "user": {
                 "data": {
                     "password": "Passwort",
-                    "station": "Seriennummer",
+                    "station": "Seriennummer der Station",
                     "username": "Benutzername"
+                },
+                "data_description": {
+                    "password": "Passwort f\u00fcr dein Wallbox-Konto.",
+                    "station": "Seriennummer des Ladeger\u00e4ts. Findet sich in der Wallbox-App oder im Wallbox-Portal.",
+                    "username": "Benutzername f\u00fcr dein Wallbox-Konto."
                 }
             }
         }
@@ -43,15 +48,31 @@
                 "name": "Maximaler ICP-Strom"
             }
         },
+        "select": {
+            "ecosmart": {
+                "name": "PV-Aufladung",
+                "state": {
+                    "eco_mode": "Eco-Modus",
+                    "full_solar": "Nur PV",
+                    "off": "Aus"
+                }
+            }
+        },
         "sensor": {
             "added_discharged_energy": {
                 "name": "Entladene Energie"
             },
             "added_energy": {
-                "name": "Zus\u00e4tzliche Energie"
+                "name": "Hinzugef\u00fcgte Energie"
+            },
+            "added_green_energy": {
+                "name": "Hinzugef\u00fcgte gr\u00fcne Energie"
+            },
+            "added_grid_energy": {
+                "name": "Hinzugef\u00fcgte Netzenergie"
             },
             "added_range": {
-                "name": "Reichweite hinzugef\u00fcgt"
+                "name": "Hinzugef\u00fcgte Reichweite"
             },
             "charging_power": {
                 "name": "Ladeleistung"
@@ -84,13 +105,33 @@
                 "name": "Ladezustand"
             },
             "status_description": {
-                "name": "Status Beschreibung"
+                "name": "Statusbeschreibung"
             }
         },
         "switch": {
             "pause_resume": {
                 "name": "Pause/Fortsetzen"
             }
+        }
+    },
+    "exceptions": {
+        "api_failed": {
+            "message": "Fehler bei der Kommunikation mit der Wallbox-API"
+        },
+        "insufficient_rights": {
+            "message": "Unzureichende Rechte f\u00fcr Wallbox-Benutzer"
+        },
+        "invalid_auth": {
+            "message": "Ung\u00fcltige Authentifizierung"
+        },
+        "too_many_requests": {
+            "message": "Fehler bei der Kommunikation mit der Wallbox-API, zu viele Anfragen"
+        }
+    },
+    "issues": {
+        "insufficient_rights": {
+            "description": "Das Wallbox-Konto hat keine ausreichenden Rechte zum Sperren/Entsperren und \u00c4ndern der Ladeleistung. Bitte weise dem Benutzer im Wallbox-Portal Admin-Rechte zu.",
+            "title": "Das Wallbox-Konto hat unzureichende Rechte."
         }
     }
 }

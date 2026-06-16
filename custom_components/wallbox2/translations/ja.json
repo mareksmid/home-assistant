@@ -7,7 +7,6 @@
         "error": {
             "cannot_connect": "\u63a5\u7d9a\u306b\u5931\u6557\u3057\u307e\u3057\u305f",
             "invalid_auth": "\u7121\u52b9\u306a\u8a8d\u8a3c",
-            "reauth_invalid": "\u518d\u8a8d\u8a3c\u306b\u5931\u6557\u3057\u307e\u3057\u305f\u3002\u30b7\u30ea\u30a2\u30eb\u756a\u53f7\u304c\u30aa\u30ea\u30b8\u30ca\u30eb\u3068\u4e00\u81f4\u3057\u307e\u305b\u3093",
             "unknown": "\u4e88\u671f\u3057\u306a\u3044\u30a8\u30e9\u30fc"
         },
         "step": {
@@ -20,8 +19,12 @@
             "user": {
                 "data": {
                     "password": "\u30d1\u30b9\u30ef\u30fc\u30c9",
-                    "station": "\u30b9\u30c6\u30fc\u30b7\u30e7\u30f3\u306e\u30b7\u30ea\u30a2\u30eb\u756a\u53f7",
                     "username": "\u30e6\u30fc\u30b6\u30fc\u540d"
+                },
+                "data_description": {
+                    "password": "Wallbox \u30a2\u30ab\u30a6\u30f3\u30c8\u306e\u30d1\u30b9\u30ef\u30fc\u30c9\u3002",
+                    "station": "\u5145\u96fb\u5668\u306e\u30b7\u30ea\u30a2\u30eb\u756a\u53f7\u3002Wallbox\u30a2\u30d7\u30ea\u307e\u305f\u306fWallbox\u30dd\u30fc\u30bf\u30eb\u3067\u78ba\u8a8d\u3067\u304d\u307e\u3059\u3002",
+                    "username": "Wallbox \u30a2\u30ab\u30a6\u30f3\u30c8\u306e\u30e6\u30fc\u30b6\u30fc\u540d\u3002"
                 }
             }
         }
@@ -41,6 +44,13 @@
             },
             "maximum_icp_current": {
                 "name": "\u6700\u5927ICP\u96fb\u6d41"
+            }
+        },
+        "select": {
+            "ecosmart": {
+                "state": {
+                    "off": "\u30aa\u30d5"
+                }
             }
         },
         "sensor": {
@@ -91,6 +101,14 @@
             "pause_resume": {
                 "name": "\u4e00\u6642\u505c\u6b62/\u518d\u958b"
             }
+        }
+    },
+    "exceptions": {
+        "invalid_auth": {
+            "message": "\u7121\u52b9\u306a\u8a8d\u8a3c"
+        },
+        "too_many_requests": {
+            "message": "Wallbox API\u3068\u306e\u901a\u4fe1\u30a8\u30e9\u30fc\u3001\u30ea\u30af\u30a8\u30b9\u30c8\u304c\u591a\u3059\u304e\u307e\u3059"
         }
     }
 }

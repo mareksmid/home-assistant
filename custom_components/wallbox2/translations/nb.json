@@ -7,7 +7,6 @@
         "error": {
             "cannot_connect": "Tilkobling mislyktes",
             "invalid_auth": "Ugyldig godkjenning",
-            "reauth_invalid": "Re-autentisering mislyktes; Serienummeret samsvarer ikke med originalen",
             "unknown": "Uventet feil"
         },
         "step": {
@@ -20,7 +19,6 @@
             "user": {
                 "data": {
                     "password": "Passord",
-                    "station": "Serienummer for stasjon",
                     "username": "Brukernavn"
                 }
             }

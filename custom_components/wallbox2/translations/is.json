@@ -1,0 +1,94 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "T\u00e6ki\u00f0 er \u00feegar skr\u00e1\u00f0",
+            "reauth_successful": "Endurau\u00f0kenning t\u00f3kst"
+        },
+        "error": {
+            "cannot_connect": "T\u00f3kst ekki a\u00f0 tengjast",
+            "invalid_auth": "\u00d3gild au\u00f0kenning",
+            "unknown": "\u00d3v\u00e6nt villa"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Lykilor\u00f0",
+                    "username": "Notendanafn"
+                }
+            },
+            "user": {
+                "data": {
+                    "password": "Lykilor\u00f0",
+                    "username": "Notendanafn"
+                }
+            }
+        }
+    },
+    "entity": {
+        "lock": {
+            "lock": {
+                "name": "L\u00e6sa"
+            }
+        },
+        "number": {
+            "energy_price": {
+                "name": "Orkuver\u00f0"
+            },
+            "maximum_charging_current": {
+                "name": "H\u00e1marks hle\u00f0slustraumur"
+            },
+            "maximum_icp_current": {
+                "name": "H\u00e1mark ICP straumur"
+            }
+        },
+        "sensor": {
+            "added_discharged_energy": {
+                "name": "T\u00e6md orka"
+            },
+            "added_energy": {
+                "name": "Vi\u00f0b\u00e6tt orka"
+            },
+            "added_range": {
+                "name": "Vi\u00f0b\u00e6tt dr\u00e6gni"
+            },
+            "charging_power": {
+                "name": "Hle\u00f0sluafl"
+            },
+            "charging_speed": {
+                "name": "Hle\u00f0sluhra\u00f0i"
+            },
+            "cost": {
+                "name": "Ver\u00f0"
+            },
+            "current_mode": {
+                "name": "N\u00faverandi stilling"
+            },
+            "depot_price": {
+                "name": "Heilds\u00f6luver\u00f0"
+            },
+            "energy_price": {
+                "name": "Orkuver\u00f0"
+            },
+            "icp_max_current": {
+                "name": "H\u00e1mark ICP straumur"
+            },
+            "max_available_power": {
+                "name": "H\u00e1marks tilt\u00e6k afl"
+            },
+            "max_charging_current": {
+                "name": "H\u00e1marks hle\u00f0slustraumur"
+            },
+            "state_of_charge": {
+                "name": "Sta\u00f0a hle\u00f0slu"
+            },
+            "status_description": {
+                "name": "St\u00f6\u00f0ul\u00fdsing"
+            }
+        },
+        "switch": {
+            "pause_resume": {
+                "name": "Bi\u00f0/halda \u00e1fram"
+            }
+        }
+    }
+}

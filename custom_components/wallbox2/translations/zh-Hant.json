@@ -22,6 +22,11 @@
                     "password": "\u5bc6\u78bc",
                     "station": "\u5de5\u4f5c\u7ad9\u5e8f\u865f",
                     "username": "\u4f7f\u7528\u8005\u540d\u7a31"
+                },
+                "data_description": {
+                    "password": "Wallbox \u5e33\u865f\u5bc6\u78bc\u3002",
+                    "station": "\u5145\u96fb\u5668\u5e8f\u865f\uff0c\u53ef\u4ee5\u5728 Wallbox \u61c9\u7528\u7a0b\u5f0f\u6216 Wallbox \u5165\u53e3\u7db2\u7ad9\u4e2d\u627e\u5230\u3002",
+                    "username": "Wallbox \u5e33\u865f\u4f7f\u7528\u8005\u540d\u7a31\u3002"
                 }
             }
         }
@@ -43,12 +48,28 @@
                 "name": "\u6700\u5927 ICP \u96fb\u6d41"
             }
         },
+        "select": {
+            "ecosmart": {
+                "name": "\u592a\u967d\u80fd\u5145\u96fb",
+                "state": {
+                    "eco_mode": "\u7bc0\u80fd\u6a21\u5f0f",
+                    "full_solar": "\u5168\u592a\u967d\u80fd",
+                    "off": "\u95dc\u9589"
+                }
+            }
+        },
         "sensor": {
             "added_discharged_energy": {
                 "name": "\u91cb\u653e\u80fd\u6e90"
             },
             "added_energy": {
                 "name": "\u88dc\u5145\u80fd\u6e90"
+            },
+            "added_green_energy": {
+                "name": "\u65b0\u589e\u7da0\u80fd"
+            },
+            "added_grid_energy": {
+                "name": "\u88dc\u5145\u96fb\u7db2\u80fd\u6e90"
             },
             "added_range": {
                 "name": "\u88dc\u5145\u822a\u7a0b"
@@ -91,6 +112,26 @@
             "pause_resume": {
                 "name": "\u66ab\u505c/\u7e7c\u7e8c"
             }
+        }
+    },
+    "exceptions": {
+        "api_failed": {
+            "message": "\u8207 Wallbox API \u901a\u8a0a\u6642\u767c\u751f\u932f\u8aa4"
+        },
+        "insufficient_rights": {
+            "message": "Wallbox \u4f7f\u7528\u8005\u6b0a\u9650\u4e0d\u8db3"
+        },
+        "invalid_auth": {
+            "message": "\u8eab\u4efd\u9a57\u8b49\u7121\u6548"
+        },
+        "too_many_requests": {
+            "message": "\u8207 Wallbox API \u901a\u8a0a\u6642\u767c\u751f\u932f\u8aa4\uff0c\u8acb\u6c42\u904e\u591a"
+        }
+    },
+    "issues": {
+        "insufficient_rights": {
+            "description": "Wallbox \u5e33\u865f\u6b0a\u9650\u4e0d\u8db3\uff0c\u7121\u6cd5\u9396\u5b9a/\u89e3\u9396\u53ca\u8b8a\u66f4\u5145\u96fb\u529f\u7387\u3002\u8acb\u65bc Wallbox \u5165\u53e3\u7db2\u7ad9\u4e2d\u70ba\u4f7f\u7528\u8005\u6307\u6d3e\u7ba1\u7406\u54e1\u6b0a\u9650\u3002",
+            "title": "Wallbox \u5e33\u865f\u6b0a\u9650\u4e0d\u8db3\u3002"
         }
     }
 }

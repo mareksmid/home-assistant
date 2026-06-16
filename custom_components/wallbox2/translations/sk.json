@@ -7,7 +7,7 @@
         "error": {
             "cannot_connect": "Nepodarilo sa pripoji\u0165",
             "invalid_auth": "Neplatn\u00e9 overenie",
-            "reauth_invalid": "Op\u00e4tovn\u00e9 overenie zlyhalo; s\u00e9riov\u00e9 \u010d\u00edslo sa nezhoduje s p\u00f4vodn\u00fdm",
+            "reauth_invalid": "Op\u00e4tovn\u00e9 overenie zlyhalo; s\u00e9riov\u00e9 \u010d\u00edslo sa nezhoduje s origin\u00e1lom.",
             "unknown": "Neo\u010dak\u00e1van\u00e1 chyba"
         },
         "step": {
@@ -22,6 +22,11 @@
                     "password": "Heslo",
                     "station": "S\u00e9riov\u00e9 \u010d\u00edslo stanice",
                     "username": "Pou\u017e\u00edvate\u013esk\u00e9 meno"
+                },
+                "data_description": {
+                    "password": "Heslo pre v\u00e1\u0161 \u00fa\u010det Wallbox.",
+                    "station": "S\u00e9riov\u00e9 \u010d\u00edslo nab\u00edja\u010dky. N\u00e1jdete ho v aplik\u00e1cii Wallbox alebo na port\u00e1li Wallbox.",
+                    "username": "Pou\u017e\u00edvate\u013esk\u00e9 meno pre va\u0161e konto Wallbox."
                 }
             }
         }
@@ -43,12 +48,28 @@
                 "name": "Maxim\u00e1lny pr\u00fad ICP"
             }
         },
+        "select": {
+            "ecosmart": {
+                "name": "Sol\u00e1rne nab\u00edjanie",
+                "state": {
+                    "eco_mode": "Re\u017eim Eco",
+                    "full_solar": "Plne sol\u00e1rne",
+                    "off": "Neakt\u00edvny"
+                }
+            }
+        },
         "sensor": {
             "added_discharged_energy": {
                 "name": "Vybit\u00e1 energia"
             },
             "added_energy": {
                 "name": "Pridan\u00e1 energia"
+            },
+            "added_green_energy": {
+                "name": "Pridan\u00e1 zelen\u00e1 energia"
+            },
+            "added_grid_energy": {
+                "name": "Pridan\u00e1 energia zo siete"
             },
             "added_range": {
                 "name": "Pridan\u00fd rozsah"
@@ -91,6 +112,26 @@
             "pause_resume": {
                 "name": "Pozastavi\u0165/obnovi\u0165"
             }
+        }
+    },
+    "exceptions": {
+        "api_failed": {
+            "message": "Chyba pri komunik\u00e1cii s rozhran\u00edm API Wallbox"
+        },
+        "insufficient_rights": {
+            "message": "Nedostato\u010dn\u00e9 pr\u00e1va pre pou\u017e\u00edvate\u013ea Wallbox"
+        },
+        "invalid_auth": {
+            "message": "Neplatn\u00e9 overenie"
+        },
+        "too_many_requests": {
+            "message": "Chyba pri komunik\u00e1cii s rozhran\u00edm Wallbox API, pr\u00edli\u0161 ve\u013ea po\u017eiadaviek"
+        }
+    },
+    "issues": {
+        "insufficient_rights": {
+            "description": "Konto Wallbox nem\u00e1 dostato\u010dn\u00e9 pr\u00e1va na uzamknutie/odomknutie a zmenu nab\u00edjacieho v\u00fdkonu. Pride\u013ete pou\u017e\u00edvate\u013eovi administr\u00e1torsk\u00e9 pr\u00e1va na port\u00e1li Wallbox.",
+            "title": "\u00da\u010det Wallbox nem\u00e1 dostato\u010dn\u00e9 pr\u00e1va."
         }
     }
 }

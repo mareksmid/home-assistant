@@ -27,15 +27,85 @@
         }
     },
     "entity": {
+        "lock": {
+            "lock": {
+                "name": "\u0417\u0430\u043c\u043e\u043a"
+            }
+        },
         "number": {
+            "energy_price": {
+                "name": "\u0426\u0435\u043d\u0430 \u043d\u0430 \u044d\u043d\u0435\u0440\u0433\u0438\u044e"
+            },
+            "maximum_charging_current": {
+                "name": "\u041c\u0430\u043a\u0441\u0438\u043c\u0430\u043b\u044c\u043d\u044b\u0439 \u0442\u043e\u043a \u0437\u0430\u0440\u044f\u0434\u043a\u0438"
+            },
             "maximum_icp_current": {
                 "name": "\u041c\u0430\u043a\u0441\u0438\u043c\u0430\u043b\u044c\u043d\u044b\u0439 \u0442\u043e\u043a ICP"
             }
         },
+        "select": {
+            "ecosmart": {
+                "state": {
+                    "off": "\u0412\u044b\u043a\u043b\u044e\u0447\u0435\u043d\u043e"
+                }
+            }
+        },
         "sensor": {
+            "added_discharged_energy": {
+                "name": "\u0420\u0430\u0437\u0440\u044f\u0436\u0435\u043d\u043d\u0430\u044f \u044d\u043d\u0435\u0440\u0433\u0438\u044f"
+            },
+            "added_energy": {
+                "name": "\u0414\u043e\u0431\u0430\u0432\u043b\u0435\u043d\u043d\u0430\u044f \u044d\u043d\u0435\u0440\u0433\u0438\u044f"
+            },
+            "added_range": {
+                "name": "\u0414\u043e\u0431\u0430\u0432\u043b\u0435\u043d\u043d\u044b\u0439 \u0434\u0438\u0430\u043f\u0430\u0437\u043e\u043d"
+            },
+            "charging_power": {
+                "name": "\u041c\u043e\u0449\u043d\u043e\u0441\u0442\u044c \u0437\u0430\u0440\u044f\u0434\u043a\u0438"
+            },
+            "charging_speed": {
+                "name": "\u0421\u043a\u043e\u0440\u043e\u0441\u0442\u044c \u0437\u0430\u0440\u044f\u0434\u043a\u0438"
+            },
+            "cost": {
+                "name": "\u0420\u0430\u0441\u0445\u043e\u0434\u044b"
+            },
+            "current_mode": {
+                "name": "\u0422\u0435\u043a\u0443\u0449\u0438\u0439 \u0440\u0435\u0436\u0438\u043c"
+            },
+            "depot_price": {
+                "name": "\u0426\u0435\u043d\u0430 \u043d\u0430 \u0441\u043a\u043b\u0430\u0434\u0435"
+            },
+            "energy_price": {
+                "name": "\u0426\u0435\u043d\u0430 \u043d\u0430 \u044d\u043d\u0435\u0440\u0433\u0438\u044e"
+            },
             "icp_max_current": {
                 "name": "\u041c\u0430\u043a\u0441\u0438\u043c\u0430\u043b\u044c\u043d\u044b\u0439 \u0442\u043e\u043a ICP"
+            },
+            "max_available_power": {
+                "name": "\u041c\u0430\u043a\u0441\u0438\u043c\u0430\u043b\u044c\u043d\u0430\u044f \u0434\u043e\u0441\u0442\u0443\u043f\u043d\u0430\u044f \u043c\u043e\u0449\u043d\u043e\u0441\u0442\u044c"
+            },
+            "max_charging_current": {
+                "name": "\u041c\u0430\u043a\u0441\u0438\u043c\u0430\u043b\u044c\u043d\u044b\u0439 \u0442\u043e\u043a \u0437\u0430\u0440\u044f\u0434\u043a\u0438"
+            },
+            "state_of_charge": {
+                "name": "\u0421\u0442\u0430\u0442\u0443\u0441 \u0437\u0430\u0440\u044f\u0434\u0430"
+            },
+            "status_description": {
+                "name": "\u041e\u043f\u0438\u0441\u0430\u043d\u0438\u0435 \u0441\u0442\u0430\u0442\u0443\u0441\u0430"
             }
+        },
+        "switch": {
+            "pause_resume": {
+                "name": "\u041f\u0430\u0443\u0437\u0430/\u0432\u043e\u0437\u043e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435"
+            }
+        }
+    },
+    "exceptions": {
+        "invalid_auth": {
+            "message": "\u041e\u0448\u0438\u0431\u043a\u0430 \u0430\u0443\u0442\u0435\u043d\u0442\u0438\u0444\u0438\u043a\u0430\u0446\u0438\u0438"
+        },
+        "too_many_requests": {
+            "message": "\u041e\u0448\u0438\u0431\u043a\u0430 \u0441\u0432\u044f\u0437\u0438 \u0441 API Wallbox, \u0441\u043b\u0438\u0448\u043a\u043e\u043c \u043c\u043d\u043e\u0433\u043e \u0437\u0430\u043f\u0440\u043e\u0441\u043e\u0432"
         }
     }
 }

@@ -20,8 +20,13 @@
             "user": {
                 "data": {
                     "password": "Salas\u00f5na",
-                    "station": "Seadme seerianumber",
+                    "station": "Jaama seerianumber",
                     "username": "Kasutajanimi"
+                },
+                "data_description": {
+                    "password": "Wallboxi konto salas\u00f5na.",
+                    "station": "Laadija seerianumber. Selle leiab Wallboxi rakendusest v\u00f5i Wallboxi portaalist.",
+                    "username": "Wallboxi konto kasutajanimi."
                 }
             }
         }
@@ -43,12 +48,28 @@
                 "name": "Maksimaalne ICP vool"
             }
         },
+        "select": {
+            "ecosmart": {
+                "name": "P\u00e4ikeseenergiaga laadimine",
+                "state": {
+                    "eco_mode": "\u00d6kore\u017eiim",
+                    "full_solar": "T\u00e4ielik p\u00e4ikeseenergia",
+                    "off": "V\u00e4ljas"
+                }
+            }
+        },
         "sensor": {
             "added_discharged_energy": {
                 "name": "T\u00fchjendatud energia"
             },
             "added_energy": {
                 "name": "Lisatud energia"
+            },
+            "added_green_energy": {
+                "name": "Lisatud roheline energia"
+            },
+            "added_grid_energy": {
+                "name": "Lisatud v\u00f5rguenergia"
             },
             "added_range": {
                 "name": "Lisatud ulatus"
@@ -91,6 +112,26 @@
             "pause_resume": {
                 "name": "Paus/j\u00e4tkamine"
             }
+        }
+    },
+    "exceptions": {
+        "api_failed": {
+            "message": "Viga Wallbox API-ga suhtlemisel"
+        },
+        "insufficient_rights": {
+            "message": "Wallboxi kasutajal pole piisavalt \u00f5igusi"
+        },
+        "invalid_auth": {
+            "message": "Tuvastamine nurjus"
+        },
+        "too_many_requests": {
+            "message": "Viga Wallbox API-ga suhtlemisel, liiga palju p\u00e4ringuid"
+        }
+    },
+    "issues": {
+        "insufficient_rights": {
+            "description": "Wallboxi kontol pole laadimisv\u00f5imsuse lukustamiseks/avamiseks ja muutmiseks piisavalt \u00f5igusi. M\u00e4\u00e4ra kasutajale Wallboxi portaalis administraatori\u00f5igused.",
+            "title": "Wallboxi kontol pole piisavalt \u00f5igusi."
         }
     }
 }

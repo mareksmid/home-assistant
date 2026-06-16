@@ -1,0 +1,137 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "T\u00e1 an gl\u00e9as cumraithe cheana f\u00e9in",
+            "reauth_successful": "D'\u00e9irigh leis an athfh\u00edordheimhni\u00fa"
+        },
+        "error": {
+            "cannot_connect": "Theip ar an nascadh",
+            "invalid_auth": "F\u00edordheimhni\u00fa neamhbhail\u00ed",
+            "reauth_invalid": "Theip ar an athfh\u00edordheimhni\u00fa; n\u00ed hionann an uimhir sraitheach agus an bunleagan",
+            "unknown": "Earr\u00e1id gan choinne"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Pasfhocal",
+                    "username": "Ainm \u00fas\u00e1ideora"
+                }
+            },
+            "user": {
+                "data": {
+                    "password": "Pasfhocal",
+                    "station": "Uimhir sraitheach an st\u00e1isi\u00fain",
+                    "username": "Ainm \u00fas\u00e1ideora"
+                },
+                "data_description": {
+                    "password": "Pasfhocal do do chuntas Wallbox.",
+                    "station": "Uimhir sraitheach an luchtaire. Is f\u00e9idir \u00ed a fh\u00e1il san aip Wallbox n\u00f3 i dtairseach Wallbox.",
+                    "username": "Ainm \u00fas\u00e1ideora do chuntas Wallbox."
+                }
+            }
+        }
+    },
+    "entity": {
+        "lock": {
+            "lock": {
+                "name": "Glas\u00e1il"
+            }
+        },
+        "number": {
+            "energy_price": {
+                "name": "Praghas fuinnimh"
+            },
+            "maximum_charging_current": {
+                "name": "Uasmh\u00e9id reatha muirir"
+            },
+            "maximum_icp_current": {
+                "name": "Uasmh\u00e9id reatha ICP"
+            }
+        },
+        "select": {
+            "ecosmart": {
+                "name": "Muirear\u00fa gr\u00e9ine",
+                "state": {
+                    "eco_mode": "M\u00f3d \u00c9icea",
+                    "full_solar": "Gr\u00e9ine ioml\u00e1n",
+                    "off": "As"
+                }
+            }
+        },
+        "sensor": {
+            "added_discharged_energy": {
+                "name": "Fuinneamh urscaoilte"
+            },
+            "added_energy": {
+                "name": "Fuinneamh breise"
+            },
+            "added_green_energy": {
+                "name": "Fuinneamh glas curtha leis"
+            },
+            "added_grid_energy": {
+                "name": "Fuinneamh breise greille"
+            },
+            "added_range": {
+                "name": "Raon curtha leis"
+            },
+            "charging_power": {
+                "name": "Cumhacht luchtaithe"
+            },
+            "charging_speed": {
+                "name": "Luas luchtaithe"
+            },
+            "cost": {
+                "name": "Costas"
+            },
+            "current_mode": {
+                "name": "M\u00f3d reatha"
+            },
+            "depot_price": {
+                "name": "Praghas an st\u00f3rais"
+            },
+            "energy_price": {
+                "name": "Praghas fuinnimh"
+            },
+            "icp_max_current": {
+                "name": "Uasmh\u00e9id reatha ICP"
+            },
+            "max_available_power": {
+                "name": "Uasmh\u00e9id cumhachta at\u00e1 ar f\u00e1il"
+            },
+            "max_charging_current": {
+                "name": "Uasmh\u00e9id reatha muirir"
+            },
+            "state_of_charge": {
+                "name": "St\u00e1t an mhuirir"
+            },
+            "status_description": {
+                "name": "Cur s\u00edos ar an st\u00e1das"
+            }
+        },
+        "switch": {
+            "pause_resume": {
+                "name": "Sos/atos\u00fa"
+            }
+        }
+    },
+    "exceptions": {
+        "api_failed": {
+            "message": "Earr\u00e1id cumars\u00e1ide le Wallbox API"
+        },
+        "insufficient_rights": {
+            "message": "Cearta neamhleor d'\u00fas\u00e1ideoir Wallbox"
+        },
+        "invalid_auth": {
+            "message": "F\u00edordheimhni\u00fa neamhbhail\u00ed"
+        },
+        "too_many_requests": {
+            "message": "Earr\u00e1id cumars\u00e1ide le Wallbox API, an iomarca iarratas"
+        }
+    },
+    "issues": {
+        "insufficient_rights": {
+            "description": "N\u00edl d\u00f3thain cearta ag an gcuntas Wallbox chun an chumhacht luchtaithe a ghlas\u00e1il/a dh\u00edghlas\u00e1il agus a athr\u00fa. Sannadh cearta riarth\u00f3ra don \u00fas\u00e1ideoir i dtairseach Wallbox, le do thoil.",
+            "title": "N\u00edl d\u00f3thain cearta ag an gcuntas Wallbox."
+        }
+    }
+}

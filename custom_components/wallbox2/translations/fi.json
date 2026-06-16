@@ -7,7 +7,6 @@
         "error": {
             "cannot_connect": "Yhteyden muodostaminen ep\u00e4onnistui",
             "invalid_auth": "Virheellinen todennus",
-            "reauth_invalid": "Uudelleentodennus ep\u00e4onnistui. Sarjanumero ei vastaa alkuper\u00e4ist\u00e4.",
             "unknown": "Odottamaton virhe"
         },
         "step": {
@@ -20,7 +19,6 @@
             "user": {
                 "data": {
                     "password": "Salasana",
-                    "station": "Aseman sarjanumero",
                     "username": "K\u00e4ytt\u00e4j\u00e4tunnus"
                 }
             }

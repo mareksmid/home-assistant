@@ -7,7 +7,7 @@
         "error": {
             "cannot_connect": "No se pudo conectar",
             "invalid_auth": "Autenticaci\u00f3n no v\u00e1lida",
-            "reauth_invalid": "La reautenticaci\u00f3n fall\u00f3; El n\u00famero de serie no coincide con el original",
+            "reauth_invalid": "Fallo al volver a autenticarse; el n\u00famero de serie no coincide con el original",
             "unknown": "Error inesperado"
         },
         "step": {
@@ -22,6 +22,11 @@
                     "password": "Contrase\u00f1a",
                     "station": "N\u00famero de serie de la estaci\u00f3n",
                     "username": "Nombre de usuario"
+                },
+                "data_description": {
+                    "password": "Contrase\u00f1a de tu cuenta de Wallbox.",
+                    "station": "N\u00famero de serie del cargador. Se puede encontrar en la app o el portal de Wallbox.",
+                    "username": "Nombre de usuario para tu cuenta de Wallbox."
                 }
             }
         }
@@ -43,12 +48,28 @@
                 "name": "Corriente m\u00e1xima del ICP"
             }
         },
+        "select": {
+            "ecosmart": {
+                "name": "Carga solar",
+                "state": {
+                    "eco_mode": "Modo Eco",
+                    "full_solar": "Solar completo",
+                    "off": "Apagado"
+                }
+            }
+        },
         "sensor": {
             "added_discharged_energy": {
                 "name": "Energ\u00eda descargada"
             },
             "added_energy": {
                 "name": "Energ\u00eda a\u00f1adida"
+            },
+            "added_green_energy": {
+                "name": "Energ\u00eda verde a\u00f1adida"
+            },
+            "added_grid_energy": {
+                "name": "Energ\u00eda de red a\u00f1adida"
             },
             "added_range": {
                 "name": "Autonom\u00eda a\u00f1adida"
@@ -91,6 +112,26 @@
             "pause_resume": {
                 "name": "Pausar/reanudar"
             }
+        }
+    },
+    "exceptions": {
+        "api_failed": {
+            "message": "Error al comunicarse con la API de Wallbox"
+        },
+        "insufficient_rights": {
+            "message": "Permisos insuficientes para el usuario de Wallbox"
+        },
+        "invalid_auth": {
+            "message": "Autenticaci\u00f3n no v\u00e1lida"
+        },
+        "too_many_requests": {
+            "message": "Error al comunicarse con la API de Wallbox, demasiadas solicitudes"
+        }
+    },
+    "issues": {
+        "insufficient_rights": {
+            "description": "La cuenta de Wallbox no tiene suficientes permisos para bloquear/desbloquear ni modificar la potencia de carga. Por favor, asigna permisos de administrador al usuario en el portal de Wallbox.",
+            "title": "La cuenta de Wallbox no tiene suficientes permisos."
         }
     }
 }

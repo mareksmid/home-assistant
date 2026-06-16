@@ -5,9 +5,8 @@
             "reauth_successful": "\u00c5terautentisering lyckades"
         },
         "error": {
-            "cannot_connect": "Det gick inte att ansluta.",
+            "cannot_connect": "Det gick inte att ansluta",
             "invalid_auth": "Ogiltig autentisering",
-            "reauth_invalid": "\u00c5terautentisering misslyckades; Serienumret st\u00e4mmer inte \u00f6verens med originalet",
             "unknown": "Ov\u00e4ntat fel"
         },
         "step": {
@@ -20,8 +19,10 @@
             "user": {
                 "data": {
                     "password": "L\u00f6senord",
-                    "station": "Stationens serienummer",
                     "username": "Anv\u00e4ndarnamn"
+                },
+                "data_description": {
+                    "username": "Anv\u00e4ndarnamn f\u00f6r ditt Wallbox-konto."
                 }
             }
         }
@@ -38,6 +39,19 @@
             },
             "maximum_charging_current": {
                 "name": "Maximal laddningsstr\u00f6m"
+            },
+            "maximum_icp_current": {
+                "name": "Maximal ICP-str\u00f6m"
+            }
+        },
+        "select": {
+            "ecosmart": {
+                "name": "Laddning med solenergi",
+                "state": {
+                    "eco_mode": "Eko-l\u00e4ge",
+                    "full_solar": "Full solenergi",
+                    "off": "Av"
+                }
             }
         },
         "sensor": {
@@ -46,6 +60,12 @@
             },
             "added_energy": {
                 "name": "Tillf\u00f6rd energi"
+            },
+            "added_green_energy": {
+                "name": "Tillf\u00f6rd gr\u00f6n energi"
+            },
+            "added_grid_energy": {
+                "name": "Tillf\u00f6rd eln\u00e4tsenergi"
             },
             "added_range": {
                 "name": "Tillf\u00f6rd r\u00e4ckvidd"
@@ -68,6 +88,9 @@
             "energy_price": {
                 "name": "Elpris"
             },
+            "icp_max_current": {
+                "name": "Max ICP-str\u00f6m"
+            },
             "max_available_power": {
                 "name": "Max tillg\u00e4nglig effekt"
             },
@@ -85,6 +108,14 @@
             "pause_resume": {
                 "name": "Pausa/\u00e5teruppta"
             }
+        }
+    },
+    "exceptions": {
+        "api_failed": {
+            "message": "Fel vid kommunikation med Wallbox API"
+        },
+        "invalid_auth": {
+            "message": "Ogiltig autentisering"
         }
     }
 }

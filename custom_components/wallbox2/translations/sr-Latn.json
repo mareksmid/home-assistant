@@ -1,0 +1,137 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Ure\u0111aj je ve\u0107 pode\u0161en",
+            "reauth_successful": "Ponovna prijava je uspe\u0161na"
+        },
+        "error": {
+            "cannot_connect": "Povezivanje nije uspelo",
+            "invalid_auth": "Neispravna prijava",
+            "reauth_invalid": "Ponovna prijava nije uspela; serijski broj se ne poklapa sa originalnim",
+            "unknown": "Neo\u010dekivana gre\u0161ka"
+        },
+        "step": {
+            "reauth_confirm": {
+                "data": {
+                    "password": "Lozinka",
+                    "username": "Korisni\u010dko ime"
+                }
+            },
+            "user": {
+                "data": {
+                    "password": "Lozinka",
+                    "station": "Serijski broj stanice",
+                    "username": "Korisni\u010dko ime"
+                },
+                "data_description": {
+                    "password": "Lozinka za Wallbox nalog",
+                    "station": "Serijski broj punja\u010da. Mo\u017ee se prona\u0107i u Wallbox aplikaciji ili u Wallbox portalu.",
+                    "username": "Korisni\u010dko ime za va\u0161 Wallbox nalog."
+                }
+            }
+        }
+    },
+    "entity": {
+        "lock": {
+            "lock": {
+                "name": "Brava"
+            }
+        },
+        "number": {
+            "energy_price": {
+                "name": "Cena struje"
+            },
+            "maximum_charging_current": {
+                "name": "Maksimalna struja punjenja"
+            },
+            "maximum_icp_current": {
+                "name": "Maksimalna ICP struja"
+            }
+        },
+        "select": {
+            "ecosmart": {
+                "name": "Solarno punjenje",
+                "state": {
+                    "eco_mode": "Eko re\u017eim",
+                    "full_solar": "Sva solarna energija",
+                    "off": "Isklju\u010deno"
+                }
+            }
+        },
+        "sensor": {
+            "added_discharged_energy": {
+                "name": "Ispra\u017enjena energija"
+            },
+            "added_energy": {
+                "name": "Dodata energija"
+            },
+            "added_green_energy": {
+                "name": "Dodata zelena energija"
+            },
+            "added_grid_energy": {
+                "name": "Dodata energija iz mre\u017ee"
+            },
+            "added_range": {
+                "name": "Dodati domet"
+            },
+            "charging_power": {
+                "name": "Snaga punjenja"
+            },
+            "charging_speed": {
+                "name": "Brzina punjenja"
+            },
+            "cost": {
+                "name": "Cena"
+            },
+            "current_mode": {
+                "name": "Trenutni re\u017eim"
+            },
+            "depot_price": {
+                "name": "Cena skladi\u0161tenja"
+            },
+            "energy_price": {
+                "name": "Cena struje"
+            },
+            "icp_max_current": {
+                "name": "Maks ICP struja"
+            },
+            "max_available_power": {
+                "name": "Maksimalna dostupna snaga"
+            },
+            "max_charging_current": {
+                "name": "Maksimalna struja punjenja"
+            },
+            "state_of_charge": {
+                "name": "Nivo napunjenosti"
+            },
+            "status_description": {
+                "name": "Opis statusa"
+            }
+        },
+        "switch": {
+            "pause_resume": {
+                "name": "Pauziraj / Nastavi"
+            }
+        }
+    },
+    "exceptions": {
+        "api_failed": {
+            "message": "Gre\u0161ka u komunikaciji sa Wallbox API-jem"
+        },
+        "insufficient_rights": {
+            "message": "Nedovoljna prava za Wallbox korisnika."
+        },
+        "invalid_auth": {
+            "message": "Neispravna prijava"
+        },
+        "too_many_requests": {
+            "message": "Gre\u0161ka u komunikaciji sa Wallbox API-jem, previ\u0161e zahteva"
+        }
+    },
+    "issues": {
+        "insufficient_rights": {
+            "description": "Wallbox nalog nema dovoljno prava za zaklju\u010davanje/otklju\u010davanje i promenu snage punjenja. Molimo vas da korisniku dodelite administratorska prava na Wallbox portalu.",
+            "title": "Wallbox nalog nema dovoljno privilegija."
+        }
+    }
+}

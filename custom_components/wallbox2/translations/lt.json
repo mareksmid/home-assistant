@@ -7,7 +7,7 @@
         "error": {
             "cannot_connect": "Nepavyko prisijungti",
             "invalid_auth": "Neteisingas autentifikavimas",
-            "reauth_invalid": "Pakartotinis autentifikavimas nepavyko; Serijos numeris neatitinka originalo",
+            "reauth_invalid": "Pakartotinis autentifikavimas nepavyko; serijos numeris neatitinka originalo",
             "unknown": "Netik\u0117ta klaida"
         },
         "step": {
@@ -22,6 +22,11 @@
                     "password": "Slapta\u017eodis",
                     "station": "Stoties serijos numeris",
                     "username": "Naudotojo vardas"
+                },
+                "data_description": {
+                    "password": "J\u016bs\u0173 Wallbox paskyros slapta\u017eodis.",
+                    "station": "\u012ekroviklio serijos numeris. J\u012f galima rasti Wallbox program\u0117l\u0117je arba Wallbox portale.",
+                    "username": "J\u016bs\u0173 Wallbox paskyros vartotojo vardas."
                 }
             }
         }
@@ -43,12 +48,28 @@
                 "name": "Did\u017eiausia ICP srov\u0117"
             }
         },
+        "select": {
+            "ecosmart": {
+                "name": "Saul\u0117s \u012fkrovimas",
+                "state": {
+                    "eco_mode": "Eko re\u017eimas",
+                    "full_solar": "Visa saul\u0117s energija",
+                    "off": "I\u0161jungta"
+                }
+            }
+        },
         "sensor": {
             "added_discharged_energy": {
                 "name": "I\u0161sikrovusi energija"
             },
             "added_energy": {
                 "name": "Prid\u0117ta energijos"
+            },
+            "added_green_energy": {
+                "name": "Prid\u0117ta \u017ealiosios energijos"
+            },
+            "added_grid_energy": {
+                "name": "Prid\u0117ta tinklo energija"
             },
             "added_range": {
                 "name": "Prid\u0117tas diapazonas"
@@ -91,6 +112,26 @@
             "pause_resume": {
                 "name": "Pristabdyti / t\u0119sti"
             }
+        }
+    },
+    "exceptions": {
+        "api_failed": {
+            "message": "Klaida bendraujant su Wallbox API"
+        },
+        "insufficient_rights": {
+            "message": "Nepakanka Wallbox naudotojo teisi\u0173"
+        },
+        "invalid_auth": {
+            "message": "Neteisingas autentifikavimas"
+        },
+        "too_many_requests": {
+            "message": "Klaida bendraujant su Wallbox API, per daug u\u017eklaus\u0173"
+        }
+    },
+    "issues": {
+        "insufficient_rights": {
+            "description": "Wallbox paskyra neturi pakankamai teisi\u0173 u\u017erakinti / atrakinti ir keisti \u012fkrovimo gali\u0105. Priskirkite vartotojui administratoriaus teises Wallbox portale.",
+            "title": "Wallbox paskyrai nepakanka teisi\u0173."
         }
     }
 }
