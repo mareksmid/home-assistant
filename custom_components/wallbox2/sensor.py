@@ -1,4 +1,6 @@
 import logging
+
+from homeassistant.util.unit_conversion import EnergyConverter
 from itertools import groupby
 from datetime import datetime, time
 
@@ -7,7 +9,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 from homeassistant.components.wallbox.sensor import WallboxSensor, SENSOR_TYPES
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription, SensorStateClass, SensorDeviceClass
 from homeassistant.components.recorder.statistics import async_import_statistics, DOMAIN as RECORDER_DOMAIN
-from homeassistant.components.recorder.models import StatisticMetaData, StatisticData
+from homeassistant.components.recorder.models import StatisticMetaData, StatisticData, StatisticMeanType
 from homeassistant.const import UnitOfEnergy
 from homeassistant.util.dt import utc_from_timestamp, UTC
 
@@ -80,5 +82,5 @@ class WallboxEnergySensor(Wallbox2Entity, SensorEntity):
                 stats.append(StatisticData(start=datetime.combine(day, time(hour, 0, 0), tzinfo=UTC), state=energy, sum=total_energy))
                 _LOGGER.info(f"Stats @ {day}/{hour} = +{energy} -> {total_energy}")
 
-            meta = StatisticMetaData(statistic_id=entity_id, source=RECORDER_DOMAIN, name='Total energy', has_sum=True, has_mean=False, unit_of_measurement=UnitOfEnergy.WATT_HOUR)
+            meta = StatisticMetaData(statistic_id=entity_id, source=RECORDER_DOMAIN, name='Total energy', has_sum=True, mean_type=StatisticMeanType.NONE, unit_of_measurement=UnitOfEnergy.WATT_HOUR, unit_class=EnergyConverter.UNIT_CLASS)
             async_import_statistics(self.coordinator._hass, meta, stats)
